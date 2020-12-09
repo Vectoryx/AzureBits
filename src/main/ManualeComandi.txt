@@ -1,0 +1,10 @@
+Admin
+	AggiungiUtente // richide i dati necessari ed aggiungi un'utente nel daatabase
+	RimuoviUtente // elenca tutti gli utenti con l'username dato, pioi chiede conferma per cancellare quello giusto
+	ModificaUente // individua l'utente corretto attravserso l'username e poi lo modifica
+	CreaClasse // crea una classe e ne inserisce gli sutdenti
+	CancellaClasse // rimuove una classe, gli studenti di quella classe avranno come classe 0 0
+	ModificaClasse // aggiungi/toglie specifici studenti da una classe
+Tutti
+	lista // mostra tutti gli utenti nel database
+	esci

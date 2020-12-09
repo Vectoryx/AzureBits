@@ -1,0 +1,132 @@
+-class Utente-
+userName
+privilegio  (admin, prof, stud)
+classe (num)
+sezione (lettera)
+password -random
+
+-Admin puo-
+gestire utenti (inserire/cancellare/modificare)
+gestire le classi di studenti
+
+-prof puo-
+gestire le domande  (inserire/cancellare/modificare)
+comporre e somministrare un Test (insieme di domande)
+verificare i risultati
+
+-stud puo-
+eseguire un test
+consultare i risultati
+
+-class Domanda-
+Questito della domanda
+[] risposte possibili a scelta multipla (1 o più)
+Immagine inerente alla domanda ???????
+punteggio (1/2/3 punti)
+difficolta (facile/media/difficile/molto *)
+materia  -|
+classe   --Indici per ricerca
+argomento-|
+#le risposte devono essere mescolate, quindi attento all'ordine!!
+#simboli utf-8
+
+-class Test-
+[] domande scelte a mano
+classe a cui somministrarlo
+tempo concesso (in minuti)
+attivo (è somministrabile agi studenti)
+Options
+punteggio domande (statico/variabile)
+penalità errore
+percentuale suff
+voto massimo
+progressione della difficoltà delle domande (lineare/inversa/random)
+#una volta creato deve essere attivo perche gli studenti lo possano vedere e eseguire
+
+
+Schema databases
+
+utenti
+ID!, username, password, hasLoggedOnce
+
+
+
+
+
+
+
+
+Un istituto di medie dimensioni (un migliaio di utenti) intende dotarsi di una piattaforma per la somministrazione di "test a risposta multipla" (TRM).
+La piattaforma deve essere in grado di conservare permanentemente oltre alle domande anche gli esiti dei test somministrati allo scopo di consentire la produzione di statistiche.
+Si individuano fondamentalmente 3 figure:
+- amministratore
+- docente
+- studente
+L'amministratore deve poter:
+- gestire gli utenti (inserire/cancellare/modificare)
+- gestire le classi
+Il docente (o istruttore) deve poter:
+- gestire le domande  (inserire/cancellare/modificare)
+- comporre e somministrare un TRM
+- verificare i risultati
+Lo studente deve poter:
+- accedere al proprio test
+- verificare (anche storicamente) i risultati ottenuti
+
+Tutti gli utenti devono essere registrati ed accedono alla piattaforma mediante password.
+
+Che cos'è una domanda?
+- nella forma più semplice si tratta di un quesito accompagnato da alcune possibili risposte.
+Possono esserci numerose varianti (non tutte da implementare subito, ma il progetto deve essere facilmente estensibile):
+	domanda a risposta multipla con 1 sola risposta corretta
+	domanda a risposta multipla con più risposte corrette
+	domanda vero/falso
+	domande a completamento*
+* queste ultime prevedono un quesito con zone "bianche" da riempire con parole e/o frasi fornite. Si può distinguere tra il caso in cui tutte le opzioni trovano posto nel quesito e il caso in cui alcune di queste sono semplici distrattori.
+Le opzioni/risposte di solito sono 4, ma appare utile prevedere una maggior flessibilità.
+Le domande possono essere accompagnate da una immagine. Utile prevedere che anche le risposte possano contemplarne.
+Le domande possono essere giudicate dal proponente più o meno difficili. Quindi può essere utile prevedere un punteggio diverso per le varie domande.
+In fase di assegnazione al TRM le risposte possibili vengono mescolate. Se la domanda prevede tra le possibili opzioni risposte del tipo "nessuna delle precedenti" etc. E' bene che queste vengano marcate per assegnarle sempre come ultime.
+Capita di scoprire che esistono docenti anche di matematica che pretendono di inserire simboli strani per integrali, serie, funzioni e quant'altro. Abbiamo una soluzione?
+Allo scopo di agevolarne la ricerca e la gestione è utile, se non necessario, che le domande possano essere caratterizzate da informazioni a corredo del tipo: materia, classe, argomento, etc. Da discutere se considerare anche il proprietario.
+
+Che cos'è un test (TRM)?
+- si tratta di una selezione di domande che il docente estrae da una raccolta magari anche numerosa che si è accumulata nei secoli.
+Si tratta quindi di consentire una "cernita" agevole fornendo dei criteri tipicamente basati su uno o più campi di ricerca (tipo argomento...). Una specie di motore di ricerca.
+Si può pensare di estrarre un certo numero di possibili domande (diciamo 30) mentre poi al singolo alunno ne capiterà una selezione (diciamo 20). Questo allo scopo di proporre a ciascun alunno un test simile ma non uguale.
+Il TRM si compone quindi di:
+- un set di domande
+- una classe a cui destinarlo
+- un criterio di valutazione*
+- un tempo massimo
+*il criterio di valutazione può variare in base ad alcuni parametri, tipo:
+- le domande valgono tutte uguali o ognuna può avere punteggi diversi?
+- una risposta sbagliata vale 0 o si prevede una penalizzazione?
+- qual è la percentuale di punti grezzi che consentono di arrivare alla sufficienza?
+- qual è la valutazione massima raggiungibile?
+- si fa uso di una progressione lineare o cosa?
+
+il TRM una volta composto rimane archiviato. Sarà visibile agli studenti solo in seguito ad una attivazione. E rimarrà tale solo per un periodo prefissato.
+
+Che cos'è la verifica dei risultati?
+- a test effettuato il docente deve poter accedere ad una sezione dove troverà i vari TRM somministrati. Di questi deve poter ricavare una pagina con le valutazioni ottenute e la distinta (anche stampabile su carta) delle singole prove degli alunni con indicato le parti corrette e le parti errate.
+Allo studente sarà accessibile solo la propria parte. Il docente deve poter scegliere se le domande errate vanno solo segnate come tali o si può visualizzare anche la risposta corretta.
+
+Il docente deve avere la possibilità di elaborare semplici statistiche del tipo:
+- qual è la percentuale di risposte corrette alla domanda x? (o a tutto un TRM)
+- qual è la prestazione nel tempo dello studente y?  (o a tutta una classe)
+
+Come fa uno studente a rispondere a un test?
+- l'alunno effettua il login e nella sua home trova l'elenco dei test attivi. Ne sceglie 1. Quindi si accede alla pagina col test vero e proprio.
+Considerazioni:
+- facciamo vedere tutte le domande o solo 1 alla volta?
+- occorre un feedback sul tempo che passa. Barra di avanzamento?
+- una volta iniziato il test non deve essere possibile ricaricare la pagina o ritornare indietro.
+- se scade il tempo il test si consegna in automatico.
+- una volta scelto un test questo non sarà più presente nell'elenco dei test attivi.
+
+La gestione degli utenti: varie tematiche.
+Non c'è niente di più noioso che inserire nei form parole e dati. Può risultare utile prevedere l'introduzione dei dati di una classe intera ricavandoli da un file di testo o da un csv estratto da un foglio di calcolo.
+Le classi "scadono" ogni anno. Risulta opportuno pensare ad un modo semplice per ricavare gli alunni di (diciamo) una quarta da quelli di una terza precedente.
+[ Può risultare interessante applicare procedure simili anche per l'acquisizione delle domande a risposta multipla.]
+Si suggerisce di introdurre, in fase di inserimento di un utente, una password random che verrà comunicata. Successivamente l'utente accederà al proprio account e la cambierà.
