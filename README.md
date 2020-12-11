@@ -62,31 +62,41 @@ Immagine inerente alla domanda (Se la domanda presenta l'utilizzo di un'immagine
 
 Punteggio (Segna quanti punti si possono assegnare ad ogni domanda. Per esempio: 1/2/3 punti)
 
-difficolta (facile/media/difficile/molto *)
+Difficoltà (Semplicemente, la difficoltà che viene assegnata alla domanda. Varia tra: Facile / Media / Difficile / Molto Difficile)
 
-materia  -|
+Materia (La materia di cui fa parte la domanda)
 
 classe   --Indici per ricerca
 
-argomento-|
+Argomento (L'argomento della domanda)
 
-#le risposte devono essere mescolate, quindi attento all'ordine!!
+---
 
-#simboli utf-8
+Infine dobbiamo creare una classe che contenga le domande. Ecco a voi la classe Test! Questa classe è descritta da:
 
--class Test-
-[] domande scelte a mano
-classe a cui somministrarlo
-tempo concesso (in minuti)
-attivo (è somministrabile agi studenti)
-Options
-punteggio domande (statico/variabile)
-penalità errore
-percentuale suff
-voto massimo
-progressione della difficoltà delle domande (lineare/inversa/random)
-#una volta creato deve essere attivo perche gli studenti lo possano vedere e eseguire
+Domande scelte a mano (Le domande che vengono scelte dal Professore quando vuole creare un test)
 
+Classe a cui somministrarlo (Questa si spiega da sola)
+
+Tempo concesso (Quanto tempo hanno gli Studenti per finire il Test. Viene misurato in minuti)
+
+Attivo (Descrive se il test è somministrabile agi studenti)
+
+Options 
+
+Punteggio domande (Questo indica se il pinteggio che si da ad ogni domanda sarà Statico o Variabile. Statico per un punteggio uguale su ogni domanda, Variabile se si decide di dare punti diversi per ogni domanda)
+
+Penalità errore (Quanti punti perdono gli Studenti per aver fatto una risposta sbagliata. ((N.B. Leonardo, fai si che mettere 0 è possibile)) )
+
+Percentuale Sufficenza (Misura quanti punti bisogna avere per avere la sufficenza)
+
+Voto massimo (Anche questa è molto semplice da capire)
+
+Progressione della difficoltà delle domande (Indica se la difficoltà delle domande sarà: Lineare quindi costante e sempre in salita / Inversa, quindi dalla più difficile alla più semplice / Random, cioè casuale)
+
+---
+
+#Una volta creato deve essere attivo perche gli studenti lo possano vedere e eseguire
 
 Schema databases
 
