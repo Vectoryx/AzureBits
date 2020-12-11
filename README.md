@@ -12,36 +12,66 @@ Il progetto in se serve a creare e gestire Test a Risposta Multipla utilizzando 
 
 Lo rendiamo possibile collegando un programma Java grazie al connettore Java di MySQL.
 
--class Utente-
-userName
-privilegio  (admin, prof, stud)
-classe (num)
-sezione (lettera)
-password -random
+---
 
--Admin puo-
-gestire utenti (inserire/cancellare/modificare)
-gestire le classi di studenti
+La **Classe Utente** è una classe generale che viene descritta da diversi attributi.
 
--prof puo-
-gestire le domande  (inserire/cancellare/modificare)
-comporre e somministrare un Test (insieme di domande)
-verificare i risultati
+Classe Utente:
 
--stud puo-
-eseguire un test
-consultare i risultati
+userName (L'userName viene descritto da un unico valore Nome.Cognome)
 
--class Domanda-
-Questito della domanda
-[] risposte possibili a scelta multipla (1 o più)
-Immagine inerente alla domanda ???????
-punteggio (1/2/3 punti)
+privilegio  (Questo descrive il potere che ha l'Utente. Ci sono tre livelli: Admin, Professore, Studente)
+
+classe (Questo è l'anno in cui si trovano gli utenti. Esso è un numero)
+
+sezione (Questa è la sezione in cui gli utenti si trovano. Essa è una lettera)
+
+password (Questa è la password che serve agli utenti per accedere ai loro rispettivi account)
+
+---
+
+Prossimamente potete vedere che cosa possono fare i diversi privilegi
+
+L' Admin può
+
+Gestire utenti (Inserire / Cancellare / Modificare);
+Gestire le classi di studenti.
+
+Il Professore può
+
+Gestire le Domande  (Inserire / Cancellare / Modificare);
+Comporre e somministrare un Test (Insieme di domande);
+Verificare i risultati.
+
+Lo Studente può
+
+Eseguire un test
+Consultare i risultati
+
+---
+
+A noi adesso ci serve una classe per le domande da inserire. La classe Domanda viene nel nostro soccorso
+
+La **Classe Domanda** serve sopratutto per semplificare il nostro lavoro e semplificare il lavoro delle persone che utilizzeranno il programma. Viene descritto da:
+
+Questito della domanda (Questo è il testo della domanda stesso. Ovviamente serve per contenerlo all'interno di una variabile)
+
+Risposte possibili a scelta multipla (Abbiamo qui quante risposte possono esserci su una domanda. Da 2 in sù. Utilizziamo un array, un elenco, per tenere traccia delle risposte all'interno di ogni domanda)
+
+Immagine inerente alla domanda (Se la domanda presenta l'utilizzo di un'immagine, questo serve per dare l'immagine un posto nel programma e nella sua parte grafica)
+
+Punteggio (Segna quanti punti si possono assegnare ad ogni domanda. Per esempio: 1/2/3 punti)
+
 difficolta (facile/media/difficile/molto *)
+
 materia  -|
+
 classe   --Indici per ricerca
+
 argomento-|
+
 #le risposte devono essere mescolate, quindi attento all'ordine!!
+
 #simboli utf-8
 
 -class Test-
