@@ -50,9 +50,7 @@ Consultare i risultati
 
 ---
 
-A noi adesso ci serve una classe per le domande da inserire. La classe Domanda viene nel nostro soccorso
-
-La **Classe Domanda** serve sopratutto per semplificare il nostro lavoro e semplificare il lavoro delle persone che utilizzeranno il programma. Viene descritto da:
+La **Classe Domanda** viene descritto da:
 
 Questito della domanda (Questo è il testo della domanda stesso. Ovviamente serve per contenerlo all'interno di una variabile)
 
@@ -72,7 +70,7 @@ Questito della domanda (Questo è il testo della domanda stesso. Ovviamente serv
 
 ---
 
-Infine dobbiamo creare una classe che contenga le domande. Ecco a voi la classe Test! Questa classe è descritta da:
+La **Classe Test** viene descritta da:
 
 **Domande scelte a mano** (Le domande che vengono scelte dal Professore quando vuole creare un test)
 
@@ -97,8 +95,3 @@ Infine dobbiamo creare una classe che contenga le domande. Ecco a voi la classe 
 ---
 
 #Una volta creato deve essere attivo perche gli studenti lo possano vedere e eseguire
-
-Schema databases
-
-utenti
-ID!, username, password, hasLoggedOnce
