@@ -7,12 +7,10 @@ import java.util.Scanner;
 public class Main {
 
 	static Utente utenteAttivo;
-	static Scanner in = new Scanner(System.in, "UTF-8"); 	// questo scanner viene utilizzato in tutti il programma perchè
+	static Scanner in = new Scanner(System.in, "UTF-8"); // questo scanner viene utilizzato in tutti il programma perchè
 															// se chiudo un'altro scanner in un'altra classe questo da
 															// problemi
 	static DBOperations baseDB = new DBOperations();
-
-	private static String[] commands = { "aggiungiutente", "rimuoviutente", "lista", "esci", "?", "aiuto"};
 
 	public static void main(String[] args) {
 		int tentativiLogin = 4; // numero di tentavi che l'utente dispone, se li esaurisce il programma si
@@ -53,26 +51,38 @@ public class Main {
 		System.out.print("--> ");
 		String userPasswdInput = in.nextLine();
 
+		String tables[] = {"studenti", "docenti", "amministratori" }; // dato che uso tre tabelle per tipo di utente
+																		// devo controllrle tutte per eseguire il login
+
+		String query;
+
 		try {
 
-			ResultSet res = baseDB.Query("SELECT * FROM `utenti` WHERE `username`='" + userNameInput
-					+ "' AND `password`='" + userPasswdInput + "';"); // eseguo la query
+			for (int i = 0; i < tables.length; i++) {
 
-			if (res.next()) { // next si posizione sulla prima linea, se il metodo ritorna false significa che
-								// il login è fallito
+				query = "SELECT * FROM `" + tables[i] + "` WHERE `username`='" + userNameInput + "' AND `password`='"
+						+ userPasswdInput + "';";
 
-				utenteAttivo = new Utente(userNameInput, res.getInt("privilegio"), res.getInt("numero_classe"),
-						res.getString("sezione_classe"));
+				ResultSet res = baseDB.Query(query); // eseguo la query
 
-				if (res.getInt("hasLoggedOnce") == 0) {
-					System.out.print(
-							"\n--ATTENZIONE QUESTO ACCOUNT HA UNA PASSWORD GENERATA AUTOMATICAMENTE, E' NECESSARIA CAMBIARLA IMMEDIATAMENTE\n");
-					utenteAttivo.cambiaPassword();
-					baseDB.Update("UPDATE utenti SET password='" + utenteAttivo.getPassword() + "' WHERE ID="
-							+ res.getInt("ID"));
-					baseDB.Update("UPDATE utenti SET hasLoggedOnce=1 WHERE ID=" + res.getInt("ID"));
+				if (res.next()) {	// next si posizione sulla prima linea, se il metodo ritorna false significa che
+									// il login è fallito
+
+					utenteAttivo = new Utente(userNameInput, i);
+
+					if (res.getInt("hasLoggedOnce") == 0) { // 0 significa che non ha ancora eseguito l'accesso
+
+						System.out.print("\nE' necessario cambiare la password.\n");
+						utenteAttivo.cambiaPassword();
+
+						query = "UPDATE `" + tables[i] + "` SET password='" + utenteAttivo.getPassword() + "' WHERE ID="
+								+ res.getInt("ID");
+						baseDB.Update(query);
+						query = "UPDATE `" + tables[i] + "` SET hasLoggedOnce=1 WHERE ID=" + res.getInt("ID");
+						baseDB.Update(query);
+					}
+					return true;
 				}
-				return true;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -82,14 +92,31 @@ public class Main {
 
 	public static String parse(String userInput) {
 
-		for (int i = 0; i < commands.length; i++) {
-			if (commands[i].contains(userInput.toLowerCase())) {
-				return commands[i];
+		ResultSet res = baseDB.Query("SELECT * FROM `comandi` WHERE `comando` LIKE '%" + userInput + "%';");
+
+		/*
+		 * for (int i = 0; i < commands.length; i++) { if
+		 * (commands[i].contains(userInput.toLowerCase())) { return commands[i]; } }
+		 */
+
+		try {
+			if (res.next()) {
+				if (res.getInt("privilegio") <= utenteAttivo.getPriviledge()) {
+					return res.getString("comando");
+				} else {
+					System.out.println("Non hai il permesso di eseguire questo comando");
+				}
+			} else {
+				System.out.println(userInput + " non riconosciuto, per una lista di comandi digita ? o aiuto");
+				return "none";
 			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 
-		System.out.println(userInput + " non riconosciuto, per una lista di comandi digita ? o aiuto");
 		return "none";
+
 	}
 
 	public static void execute(String command) {
@@ -107,13 +134,17 @@ public class Main {
 				break;
 
 			case "lista":
-				ResultSet res = baseDB.Query("SELECT * FROM `utenti`;");
+
+				String tables[] = { "student", "docent", "amministrator" };
 
 				try {
-					while (res.next()) {
-						System.out.printf("ID = %s, Username = %s, Classe = %d^%s, tipo = %s \n", res.getString("ID"),
-								res.getString("username"), res.getInt("numero_classe"), res.getString("sezione_classe"),
-								Utente.privilegi[res.getInt("privilegio")]);
+					for (int i = 0; i < tables.length; i++) {
+						ResultSet utenti = baseDB.Query("SELECT * FROM `" + tables[i] + "i`;");
+
+						while (utenti.next()) {
+							System.out.printf("ID = %s, Username = %s, tipo = " + tables[i] + "e \n",
+									utenti.getString("ID"), utenti.getString("username"));
+						}
 					}
 				} catch (SQLException e) {
 					e.printStackTrace();
@@ -125,11 +156,19 @@ public class Main {
 				System.exit(0);
 				break;
 
+			case "aiuto": // TODO: descrivere il comando presente dopo aiuto
+
 			case "?":
-			case "aiuto":
 				System.out.println("Lista comandi consentiti:");
-				for (int i = 0; i < commands.length; i++) {
-					System.out.println(commands[i]);
+				ResultSet comandi = baseDB.Query("SELECT * FROM `comandi`;");
+
+				try {
+					while (comandi.next()) {
+						System.out.printf("Nome: %-20s Privilegio necessario: %s \n", comandi.getString("comando"),
+								Utente.privilegi[comandi.getInt("privilegio")]);
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
 				}
 
 			default:

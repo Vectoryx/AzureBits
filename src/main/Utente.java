@@ -10,18 +10,19 @@ public class Utente {
 	public final static int PROFESSORE = 1;
 	public final static int AMMINISTRATORE = 2;
 
-	public static final String privilegi[] = {"studente", "professore", "amministratore"};
+	public static final String privilegi[] = { "studente", "professore", "amministratore" };
 	public static final char prompt[] = { '@', '>', '#' }; // il grado di privilegio è anche riflettuto dal prompt
+	public static final String tables[] = { "studenti", "docenti", "amministratori" };
 
 	private Random randGen = new Random();
 
 	private String userName;
 	private int privilegio;
-	private int classe;
-	private String sezione;
+	// private int classe;
+	// private String sezione;
 	private String password;
 
-	public Utente(String nome, int privilegio, int classe, String sezione) {
+	public Utente(String nome, int privilegio) {
 		this.userName = nome;
 		this.privilegio = privilegio;
 		genPassword();
@@ -43,6 +44,16 @@ public class Utente {
 	 */
 	public String getUserName() {
 		return this.userName;
+	}
+
+	/**
+	 * Ritorna il grado di privilegio, lo specifico perchè il valore privilegio è
+	 * privato
+	 * 
+	 * @return password
+	 */
+	public int getPriviledge() {
+		return this.privilegio;
 	}
 
 	/**
@@ -81,31 +92,21 @@ public class Utente {
 	public char validaPassword(String pass) {
 		return 0;
 		/*
-		String SpecialChar = "-.,+;:_^@#?=)(/&%$£!|\n\\";
-		char[] passChar = pass.toCharArray();
-		boolean[] requirements = new boolean[4];
-		// 0 = lettere maiuscole, 1 = lettere minuscole, 2 = numeri, 3 = simboli
-		for (int i = 0; i < passChar.length; i++) {
-			if (Character.isUpperCase(passChar[i])) { // lettere miuscole
-				requirements[0] = true;
-			} else if (Character.isLowerCase(passChar[i])) { // lettere minuscole
-				requirements[1] = true;
-			} else if (Character.isDigit(passChar[i])) { // numeri
-				requirements[2] = true;
-			} else if (SpecialChar.contains(passChar[i] + "")) { // caratteri speciali
-				requirements[3] = true;
-			} else {
-				return passChar[i];
-			}
-		}
-
-		for (int i = 0; i < requirements.length; i++) {
-			if (requirements[i] != true) {
-				return 1; // manca un tipo di carattere nella password
-			}
-		}
-
-		return 0; // tutto apposto*/
+		 * String SpecialChar = "-.,+;:_^@#?=)(/&%$£!|\n\\"; char[] passChar =
+		 * pass.toCharArray(); boolean[] requirements = new boolean[4]; // 0 = lettere
+		 * maiuscole, 1 = lettere minuscole, 2 = numeri, 3 = simboli for (int i = 0; i <
+		 * passChar.length; i++) { if (Character.isUpperCase(passChar[i])) { // lettere
+		 * miuscole requirements[0] = true; } else if
+		 * (Character.isLowerCase(passChar[i])) { // lettere minuscole requirements[1] =
+		 * true; } else if (Character.isDigit(passChar[i])) { // numeri requirements[2]
+		 * = true; } else if (SpecialChar.contains(passChar[i] + "")) { // caratteri
+		 * speciali requirements[3] = true; } else { return passChar[i]; } }
+		 * 
+		 * for (int i = 0; i < requirements.length; i++) { if (requirements[i] != true)
+		 * { return 1; // manca un tipo di carattere nella password } }
+		 * 
+		 * return 0; // tutto apposto
+		 */
 	}
 
 	/**
@@ -123,7 +124,6 @@ public class Utente {
 	 * Cambia la password con una data dall'utente, chiedendo la conferma.
 	 */
 	public void cambiaPassword() {
-
 
 		String nuovaPasswdInputOrg, nuovaPasswdInputCp;
 
@@ -151,7 +151,6 @@ public class Utente {
 			}
 		}
 
-
 		password = nuovaPasswdInputOrg;
 	}
 
@@ -165,12 +164,13 @@ public class Utente {
 		System.out.print("Inserisci l'UserName dell'utente che vuoi aggiugere\n--> ");
 		String tempUsername = Main.in.nextLine();
 
-		System.out.print("Inserisci il numero della classe dell'utente che vuoi aggiugere\n--> ");
+		/*System.out.print("Inserisci il numero della classe dell'utente che vuoi aggiugere\n--> ");
 		int tempClasse = Main.in.nextInt();
 		Main.in.nextLine(); // nextint non cancella il carattere \n dallo stream
 
 		System.out.print("Inserisci la sezione dell'utente che vuoi aggiugere\n--> ");
-		String tempSezione = Main.in.nextLine();
+		String tempSezione = Main.in.nextLine();*/ // TODO: richiedere la classe esclusivamente allo studente
+		
 
 		System.out.print("Inserisci il grado di privilegio dell'utente che vuoi aggiugere\n--> ");
 		String tempPriviledge = Main.in.nextLine();
@@ -185,11 +185,10 @@ public class Utente {
 			priviledge = 2;
 		}
 
-		Utente tempUser = new Utente(tempUsername, priviledge, tempClasse, tempSezione);
-		
+		Utente tempUser = new Utente(tempUsername, priviledge);
 
-		Main.baseDB.Update("INSERT INTO utenti (username, password, hasLoggedOnce, numero_classe, sezione_classe, privilegio) VALUES ('" + tempUsername + "', '"
-				+ tempUser.password + "', 0, " + tempClasse + ", '" + tempSezione + "', " + priviledge + ");");
+		Main.baseDB.Update("INSERT INTO " + tables[priviledge] + " (username, password, hasLoggedOnce) VALUES ('"
+				+ tempUsername + "', '" + tempUser.password + "', 0);");
 
 		return tempUser;
 
@@ -205,24 +204,28 @@ public class Utente {
 		System.out.print("Inserisci l'username dell'utente che vuoi cancellare\n--> ");
 		String inputUsername = Main.in.nextLine();
 
-		ResultSet res = Main.baseDB
-				.Query("SELECT `ID`, `username` FROM `utenti` WHERE `username` LIKE '%" + inputUsername + "%';");
-		try {
-			int count = 0;
-			while (res.next()) {
-				System.out.println("id = " + res.getInt("ID") + ", nomeUtente = " + res.getString("username") +
-									", classe = " + res.getString("sezione") + "^" + res.getInt("classe"));
-				count++;
+		for (int i = 0; i < tables.length; i++) {
+
+			ResultSet res = Main.baseDB.Query("SELECT `ID`, `username` FROM `" + tables[i]
+					+ "` WHERE `username` LIKE '%" + inputUsername + "%';");
+			try {
+				int count = 0;
+				while (res.next()) {
+					System.out.println("id = " + res.getInt("ID") + ", nomeUtente = " + res.getString("username")
+							+ ", classe = " + res.getString("sezione") + "^" + res.getInt("classe"));
+					count++;
+				}
+
+				System.out.println(count + " utenti trovati con '" + inputUsername + "' presente nel nome.");
+				System.out.print("Quale vuoi cancellare? (Digita l'id)\n-->");
+				int inputID = Main.in.nextInt();
+
+				Main.baseDB.Update("DELETE FROM `" + tables[i] + "` WHERE `ID`=" + inputID + ";");
+
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
 
-			System.out.println(count + " utenti trovati con '" + inputUsername + "' presente nel nome.");
-			System.out.print("Quale vuoi cancellare? (Digita l'id)\n-->");
-			int inputID = Main.in.nextInt();
-
-			Main.baseDB.Update("DELETE FROM `utenti` WHERE `ID`=" + inputID + ";");
-
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 
 	}

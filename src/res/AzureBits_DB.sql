@@ -20,7 +20,7 @@ CREATE TABLE classi(
 	anno_scolastico VARCHAR(10)
 );
 
-CREATE TABLE studente(
+CREATE TABLE studenti(
 	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	username VARCHAR(50),
 	password VARCHAR(50),
