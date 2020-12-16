@@ -1,6 +1,6 @@
 # Progetto TRM ( Test a Risposta Multipla)
 
-**Nome Azienda**: Pending
+**Nome Azienda**: Azurebits
 
 # Contributori:
 **Leonardo Montagner, Daniele Pontillo, Fabio Foltran, Mattia Pravato**
