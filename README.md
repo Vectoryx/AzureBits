@@ -1,6 +1,6 @@
 # Progetto TRM ( Test a Risposta Multipla)
 
-**Nome Azienda**: Azurebits
+**Nome Azienda**: AzureBits
 
 # Contributori:
 **Leonardo Montagner, Daniele Pontillo, Fabio Foltran, Mattia Pravato**
