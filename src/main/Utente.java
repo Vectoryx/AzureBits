@@ -12,7 +12,7 @@ public class Utente {
 
 	public static final String privilegi[] = { "studente", "professore", "amministratore" };
 	public static final char prompt[] = { '@', '>', '#' }; // il grado di privilegio è anche riflettuto dal prompt
-	public static final String tables[] = { "studenti", "docenti", "amministratori" };
+	public static final String tables[] = { "studenti", "docenti"};
 
 	private Random randGen = new Random();
 
@@ -130,6 +130,7 @@ public class Utente {
 		while (true) {
 			System.out.print("Inserisci la nuova password\n-->");
 			nuovaPasswdInputOrg = Main.in.nextLine(); // nuova password originale
+
 			System.out.print("Reinserisci la nuova password\n-->");
 			nuovaPasswdInputCp = Main.in.nextLine(); // la stessa password per essere sicuri che sia stata
 														// scritta bene
@@ -162,35 +163,51 @@ public class Utente {
 	public static Utente createUser() {
 
 		System.out.print("Inserisci l'UserName dell'utente che vuoi aggiugere\n--> ");
-		String tempUsername = Main.in.nextLine();
+		String _Username = Main.in.nextLine();
 
-		/*System.out.print("Inserisci il numero della classe dell'utente che vuoi aggiugere\n--> ");
-		int tempClasse = Main.in.nextInt();
-		Main.in.nextLine(); // nextint non cancella il carattere \n dallo stream
-
-		System.out.print("Inserisci la sezione dell'utente che vuoi aggiugere\n--> ");
-		String tempSezione = Main.in.nextLine();*/ // TODO: richiedere la classe esclusivamente allo studente
-		
 
 		System.out.print("Inserisci il grado di privilegio dell'utente che vuoi aggiugere\n--> ");
-		String tempPriviledge = Main.in.nextLine();
+		String _Priviledge = Main.in.nextLine();
 
 		int priviledge = 0;
 
-		if (tempPriviledge.equals("studente") || tempPriviledge.equals("0")) {
+		if (_Priviledge.equals("studente") || _Priviledge.equals("0")) {
 			priviledge = 0;
-		} else if (tempPriviledge.equals("professore") || tempPriviledge.equals("1")) {
+		} else if (_Priviledge.equals("professore") || _Priviledge.equals("1")) {
 			priviledge = 1;
-		} else if (tempPriviledge.equals("amministratore") || tempPriviledge.equals("2")) {
+		} else if (_Priviledge.equals("amministratore") || _Priviledge.equals("2")) {
 			priviledge = 2;
 		}
 
-		Utente tempUser = new Utente(tempUsername, priviledge);
+		String _Sezione;
+		if (priviledge == 0) {
+			String query = "SELECT `id_classe` FROM classi";
+			ResultSet res = Main.baseDB.Query(query);
 
-		Main.baseDB.Update("INSERT INTO " + tables[priviledge] + " (username, password, hasLoggedOnce) VALUES ('"
-				+ tempUsername + "', '" + tempUser.password + "', 0);");
+			try {
+				while (res.next()) {
+					System.out.println(res.getString("id_classe"));
+				}
+			} catch (SQLException e) {
+			}
 
-		return tempUser;
+			System.out.print("Inserisci la sezione dell'utente che vuoi aggiugere\n--> ");
+			_Sezione = Main.in.nextLine(); 
+		}
+
+
+		Utente _User = new Utente(_Username, priviledge);
+
+		String table;
+		if (priviledge == 2) {
+			table = "amministratore";
+		} else {
+			table = tables[priviledge];
+		}
+		Main.baseDB.Update("INSERT INTO " + table + " (username, password, hasLoggedOnce) VALUES ('"
+				+ _Username + "', '" + _User.password + "', 0);");
+
+		return _User;
 
 	}
 

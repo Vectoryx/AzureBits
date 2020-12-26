@@ -1,17 +1,10 @@
 -- tebelle per gli utenti
-
-CREATE TABLE amministratori(
-	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	username VARCHAR(50),
-	password VARCHAR(50),
-	hasLoggedOnce INT DEFAULT 0
-);
-
 CREATE TABLE docenti(
 	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	username VARCHAR(50),
 	password VARCHAR(50),
-	hasLoggedOnce INT DEFAULT 0
+	hasLoggedOnce INT DEFAULT 0,
+	admin INT DEFAULT 0
 );
 
 CREATE TABLE classi(
@@ -29,7 +22,7 @@ CREATE TABLE studenti(
 	FOREIGN KEY (id_classe) REFERENCES classi (id_classe)
 );
 
-docenti_classiCREATE TABLE docenti_classi (
+CREATE TABLE docenti_classi (
 	id_docente INT NOT NULL,
 	id_classe VARCHAR(5) NOT NULL,
 	FOREIGN KEY (id_docente) REFERENCES docenti (ID),
@@ -51,7 +44,9 @@ CREATE TABLE domande(
 	img_url VARCHAR(50),
 	materia VARCHAR(15),
 	punteggio INT,
-	tipo INT
+	tipo INT,
+	id_argomento INT,
+	FOREIGN KEY (id_argomento) REFERENCES argomenti (ID)
 );
 
 CREATE TABLE argomenti(
@@ -82,10 +77,9 @@ CREATE TABLE test_argomenti(
 	FOREIGN KEY (id_test) REFERENCES test (ID)
 );
 
--- tabella per la gestione dei comandi
-
-CREATE TABLE comandi(
-	comando VARCHAR(50) PRIMARY KEY NOT NULL,
-	privilegi INT,
-	descrizione VARCHAR(50)
+CREATE TABLE esegue(
+	id_domande INT,
+	id_test INT,
+	FOREIGN KEY (id_domande) REFERENCES domande (ID),
+	FOREIGN KEY (id_test) REFERENCES test (ID)
 );

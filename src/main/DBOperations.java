@@ -1,5 +1,12 @@
 package main;
 
+/* 
+TODO: funzioni diverse per: query, update, insert, remove
+TODO: storia di tutte le operazioni fatte sotto forma di testo in un LOG
+TODO: aggiungere la possibilità di eseguire procedure
+TODO: esegue una query e ne stampa automaticamente il risultato
+*/
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.*;

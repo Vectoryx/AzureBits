@@ -3,6 +3,7 @@ package main;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class Main {
 
@@ -11,6 +12,23 @@ public class Main {
 															// se chiudo un'altro scanner in un'altra classe questo da
 															// problemi
 	static DBOperations baseDB = new DBOperations();
+
+	static Comando comandi[] = { new Comando("aggiungiutente", 2, "Aggiunge un utente al database"),
+			new Comando("rimuoviutente", 2, "Rimuove un utente dal database"),
+			new Comando("cancellaclasse", 2, "Cancella una classe di studenti (non cancella gli studenti)"),
+			new Comando("creaclasse", 2, "Crea una classe di studenti"),
+			new Comando("modificaclasse", 2, "Aggiunge o rimuove specifici studenti da una classe"),
+			new Comando("modificautente", 2, "Modifica alcuni paramentri di un utente"),
+			new Comando("eliminatest", 1, "Elimina nella sua interezza un test"),
+			new Comando("modificatest", 1, "Aggiunge o rimuova alcune domande dal test"),
+			new Comando("eliminadomanda", 1, "Elimina una domanda dal database"),
+			new Comando("createst", 1, "Crea un test in base alle domande ed ai parametri selezionati"),
+			new Comando("creadomanda", 1, "Crea una domanda con delle risposte"),
+			new Comando("lista", 1, "Mostra la lista di tutti gli utenti nel database"),
+			new Comando("iniziatest", 0, "Inizia un test dato e permettendo di riposndere a tutte le domande"),
+			new Comando("esci", 0, "Esci dal programma"), new Comando("?", 0, "Mostra lista dei comandi"),
+			new Comando("aiuto", 0, "Mostra descrizione dei comandi"),
+			new Comando("valutatest", 0, "Valuta il test appena fatto")};
 
 	public static void main(String[] args) {
 		int tentativiLogin = 4; // numero di tentavi che l'utente dispone, se li esaurisce il programma si
@@ -31,7 +49,7 @@ public class Main {
 		// permetto all'utente di gestire i comandi in base al privilegio
 
 		String input;
-		String command;
+		Comando command;
 
 		while (true) {
 			System.out.print(utenteAttivo.getUserName() + "" + utenteAttivo.getPrompt());// wait for input
@@ -51,10 +69,10 @@ public class Main {
 		System.out.print("--> ");
 		String userPasswdInput = in.nextLine();
 
-		String tables[] = {"studenti", "docenti", "amministratori" }; // dato che uso tre tabelle per tipo di utente
-																		// devo controllrle tutte per eseguire il login
+		String tables[] = {"studenti", "docenti"}; // dato che uso due tabelle per tipo di utente
+														// devo controllrle entrambe per eseguire il login
 
-		String query;
+		String query; // stringa di supporto
 
 		try {
 
@@ -65,10 +83,16 @@ public class Main {
 
 				ResultSet res = baseDB.Query(query); // eseguo la query
 
-				if (res.next()) {	// next si posizione sulla prima linea, se il metodo ritorna false significa che
+				if (res.next()) { // next si posizione sulla prima linea, se il metodo ritorna false significa che
 									// il login è fallito
 
-					utenteAttivo = new Utente(userNameInput, i);
+					try {
+						if (res.getInt("admin") == 1) {
+							utenteAttivo = new Utente(userNameInput, 2);
+						} else {
+							utenteAttivo = new Utente(userNameInput, i);
+						}
+					} catch (SQLException e) {}
 
 					if (res.getInt("hasLoggedOnce") == 0) { // 0 significa che non ha ancora eseguito l'accesso
 
@@ -90,38 +114,44 @@ public class Main {
 		return false;
 	}
 
-	public static String parse(String userInput) {
+	/**
+	 * Data una stringa restituisce il comando corretto e relativi argomenti,
+	 * controlla eventualmente se l'utente ha i privilegi necessari per il comando
+	 * 
+	 * @param userInput
+	 * @return
+	 */
+	public static Comando parse(String userInput) {
 
-		ResultSet res = baseDB.Query("SELECT * FROM `comandi` WHERE `comando` LIKE '%" + userInput + "%';");
+		String[] arguments = userInput.split(" ");
 
-		/*
-		 * for (int i = 0; i < commands.length; i++) { if
-		 * (commands[i].contains(userInput.toLowerCase())) { return commands[i]; } }
-		 */
+		Comando current = new Comando("None", 3, "None");
 
-		try {
-			if (res.next()) {
-				if (res.getInt("privilegio") <= utenteAttivo.getPriviledge()) {
-					return res.getString("comando");
-				} else {
-					System.out.println("Non hai il permesso di eseguire questo comando");
-				}
-			} else {
-				System.out.println(userInput + " non riconosciuto, per una lista di comandi digita ? o aiuto");
-				return "none";
+		for (int i = 0; i < comandi.length; i++) {
+			if (comandi[i].getNome().contains(arguments[0].toLowerCase())) {
+				current = comandi[i];
 			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
 		}
 
-		return "none";
+		if (arguments.length > 1) {
+			current.setArguments(Arrays.copyOfRange(arguments, 1, arguments.length));
+		}
+
+		if (current.getNome().equals("None")) {
+			System.out.println(userInput + " non riconosciuto, per una lista di comandi digita ? o aiuto");
+			return current;
+		} else if (current.getPrivilegio() > utenteAttivo.getPriviledge()) {
+			System.out.println("Non hai il permesso di eseguire " + userInput);
+			return new Comando("None", 3, "None");
+		} else {
+			return current;
+		}
 
 	}
 
-	public static void execute(String command) {
+	public static void execute(Comando command) {
 
-		String[] arguments = command.split(" ");
+		String[] arguments = command.getNome().split(" ");
 
 		switch (arguments[0]) {
 
@@ -135,15 +165,22 @@ public class Main {
 
 			case "lista":
 
-				String tables[] = { "student", "docent", "amministrator" };
+				String tables[] = { "student", "docent" };
 
 				try {
+					String type;
 					for (int i = 0; i < tables.length; i++) {
 						ResultSet utenti = baseDB.Query("SELECT * FROM `" + tables[i] + "i`;");
 
 						while (utenti.next()) {
-							System.out.printf("ID = %s, Username = %s, tipo = " + tables[i] + "e \n",
-									utenti.getString("ID"), utenti.getString("username"));
+							if (tables[i].equals("docent") && utenti.getInt("admin") > 0) {
+								type = "amministratore";
+							} else {
+								type = tables[i] + "e";
+							}
+
+							System.out.printf("ID = %s, Username = %s, tipo = %s \n",
+								utenti.getString("ID"), utenti.getString("username"), type);
 						}
 					}
 				} catch (SQLException e) {
@@ -156,7 +193,10 @@ public class Main {
 				System.exit(0);
 				break;
 
-			case "aiuto": // TODO: descrivere il comando presente dopo aiuto
+			case "aiuto":
+				Comando obj = parse(arguments[1]);
+				System.out.print(obj.getDescrizione());
+				break;
 
 			case "?":
 				System.out.println("Lista comandi consentiti:");
@@ -170,6 +210,20 @@ public class Main {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+			
+			case "creaclasse":
+				String _anno, _indirzzo, _classe;
+
+				System.out.print("Inserisci il numero e la sezione della classe che vuoi aggiungere \n--> ");
+				_classe = in.nextLine();
+
+				System.out.print("Inserisci l'indirzzo(informatica, grafica, ...) della classe che vuoi aggiungere \n--> ");
+				_indirzzo = in.nextLine();
+
+				System.out.print("Inserisci l'anno della classe che vuoi aggiungere \n--> "); // TODO: chiedere al prof a cosa serve l'anno
+				_anno = in.nextLine();
+
+				baseDB.Update("INSERT INTO classi(`id_classe`,`indirizzo`,`anno_scolastico`) VALUES('" + _classe + "','" + _indirzzo + "','" + _anno + "')");
 
 			default:
 				break;
