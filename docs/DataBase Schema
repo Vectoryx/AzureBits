@@ -1,0 +1,3 @@
+Questa è lo schema del database che in que3sto momento è in utilizzo.
+
+Studente = **ID**, username, password, hasLoggedOnce, id_classe
