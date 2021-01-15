@@ -1,6 +1,7 @@
 package main;
 
 import java.util.Random;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -10,57 +11,15 @@ public class Utente {
 	public final static int PROFESSORE = 1;
 	public final static int AMMINISTRATORE = 2;
 
-	public static final String privilegi[] = { "studente", "professore", "amministratore" };
-	public static final char prompt[] = { '@', '>', '#' }; // il grado di privilegio è anche riflettuto dal prompt
-	public static final String tables[] = { "studenti", "docenti"};
+	private static final char prompt[] = { '@', '>', '#' }; // il grado di privilegio è anche riflettuto dal prompt
+	private static final String tabelle[] = { "studenti", "docenti" };
+	private static final String campi[][] = {{"username", "password", "hasLoggedOnce", "id_classe"}, 
+											{"username", "password", "hasLoggedOnce", "admin"}};
 
-	private Random randGen = new Random();
+	private static Random randGen = new Random();
 
-	private String userName;
-	private int privilegio;
-	// private int classe;
-	// private String sezione;
-	private String password;
-
-	public Utente(String nome, int privilegio) {
-		this.userName = nome;
-		this.privilegio = privilegio;
-		genPassword();
-	}
-
-	/**
-	 * Ritorna la password, lo specifico perchè il valore Password è privato
-	 * 
-	 * @return password
-	 */
-	public String getPassword() {
-		return this.password;
-	}
-
-	/**
-	 * Ritorna l'username, dato che il valore è privato
-	 * 
-	 * @return l'username
-	 */
-	public String getUserName() {
-		return this.userName;
-	}
-
-	/**
-	 * Ritorna il grado di privilegio, lo specifico perchè il valore privilegio è
-	 * privato
-	 * 
-	 * @return password
-	 */
-	public int getPriviledge() {
-		return this.privilegio;
-	}
-
-	/**
-	 * @return il prompt appropriato per privilegio che questo utente ha
-	 */
-	public char getPrompt() {
-		return prompt[this.privilegio];
+	public static char getPrompt(int privilegio) {
+		return prompt[privilegio];
 	}
 
 	/**
@@ -68,7 +27,7 @@ public class Utente {
 	 * numeri e 5 lettere Serve come password "placeholder" per il primo accesso
 	 * deigli utenti registrati dell'admin
 	 */
-	private void genPassword() {
+	public static String genPassword() {
 		String res = ""; // la password da comporre passo passo
 
 		res += (randGen.nextInt(899) + 100); // tre numeri casuali tra 100 e 999
@@ -79,7 +38,7 @@ public class Utente {
 			res += temp;
 		}
 
-		this.password = res; // aggiorna la password dell'utente con quella appena creata
+		return res; // aggiorna la password dell'utente con quella appena creata
 	}
 
 	/**
@@ -89,7 +48,7 @@ public class Utente {
 	 * @param pass la password da controllare
 	 * @return se la password e' valida o no
 	 */
-	public char validaPassword(String pass) {
+	public static char validaPassword(String pass) {
 		return 0;
 		/*
 		 * String SpecialChar = "-.,+;:_^@#?=)(/&%$£!|\n\\"; char[] passChar =
@@ -110,28 +69,17 @@ public class Utente {
 	}
 
 	/**
-	 * Semplicemente controlla che la password data corrsiponda a quella di questo
-	 * utente
-	 * 
-	 * @param pass la password da controllare
-	 * @return
-	 */
-	public boolean checkPassword(String pass) { //
-		return (pass.equals(this.password));
-	}
-
-	/**
 	 * Cambia la password con una data dall'utente, chiedendo la conferma.
 	 */
-	public void cambiaPassword() {
+	public static String cambiaPassword() {
 
 		String nuovaPasswdInputOrg, nuovaPasswdInputCp;
 
 		while (true) {
-			System.out.print("Inserisci la nuova password\n-->");
+			System.out.print("Inserisci la nuova password\n--> ");
 			nuovaPasswdInputOrg = Main.in.nextLine(); // nuova password originale
 
-			System.out.print("Reinserisci la nuova password\n-->");
+			System.out.print("Reinserisci la nuova password\n--> ");
 			nuovaPasswdInputCp = Main.in.nextLine(); // la stessa password per essere sicuri che sia stata
 														// scritta bene
 
@@ -148,11 +96,11 @@ public class Utente {
 						"La password deve contenere almeno una lettere maiscola, una lettera minuscola, un numero, un simbolo speciale,"
 								+ " e deve essere lunga almeno 8 caratteri");
 			} else {
-				System.out.print("Il carattere " + exit_code + " non è permesso\n");
+				System.out.printf("Il carattere %s non è permesso\n", exit_code);
 			}
 		}
 
-		password = nuovaPasswdInputOrg;
+		return nuovaPasswdInputOrg;
 	}
 
 	/**
@@ -160,13 +108,13 @@ public class Utente {
 	 * 
 	 * @return l'utente appena creato
 	 */
-	public static Utente createUser() {
+	public static void creaUtente() {
 
-		System.out.print("Inserisci l'UserName dell'utente che vuoi aggiugere\n--> ");
+		System.out.print("Inserisci l'username dell'utente che vuoi aggiugere\n--> ");
 		String _Username = Main.in.nextLine();
 
-
-		System.out.print("Inserisci il grado di privilegio dell'utente che vuoi aggiugere\n--> ");
+		System.out.print(
+				"Inserisci il grado di privilegio dell'utente che vuoi aggiugere (studente, professore, amministratore)\n--> ");
 		String _Priviledge = Main.in.nextLine();
 
 		int priviledge = 0;
@@ -179,10 +127,22 @@ public class Utente {
 			priviledge = 2;
 		}
 
-		String _Sezione;
+		String table;
+		if (priviledge == 2) {
+			table = "amministratore";
+		} else {
+			table = tabelle[priviledge];
+		}
+
+		String _Password = genPassword();
+		Main.baseDB.Update("INSERT INTO " + table + " (username, password, hasLoggedOnce) VALUES ('" + _Username
+				+ "', '" + _Password + "', 0);");
+
 		if (priviledge == 0) {
-			String query = "SELECT `id_classe` FROM classi";
-			ResultSet res = Main.baseDB.Query(query);
+
+			System.out.println("Inserisci la sezione dell'utente che vuoi aggiugere tra le classi presenti:");
+
+			ResultSet res = Main.baseDB.Query("SELECT `id_classe` FROM classi");
 
 			try {
 				while (res.next()) {
@@ -191,23 +151,60 @@ public class Utente {
 			} catch (SQLException e) {
 			}
 
-			System.out.print("Inserisci la sezione dell'utente che vuoi aggiugere\n--> ");
-			_Sezione = Main.in.nextLine(); 
+			System.out.print("--> ");
+			String _Sezione = Main.in.nextLine();
+
+			Main.baseDB.Update("UPDATE " + table + " SET id_classe = '" + _Sezione + "' WHERE username = '" + _Username
+					+ "' AND password = '" + _Password + "';");
 		}
 
+	}
 
-		Utente _User = new Utente(_Username, priviledge);
+	public static int trovaUtente(String prompt) throws SQLException {
+		System.out.print(prompt);
+		String _Username = Main.in.nextLine();
 
-		String table;
-		if (priviledge == 2) {
-			table = "amministratore";
+		int _N_docenti = 0;
+		int _N_studenti = 0;
+		ResultSet temp;
+
+		// trovo i docenti con l'username simile
+		temp = Main.baseDB.Query("SELECT `ID`, `username` FROM `docenti` WHERE `username` LIKE '%" + _Username + "%';");
+
+		while (temp.next()) {
+			System.out.printf("id = %d, nomeUtente = %s\n", temp.getInt("ID"), temp.getString("username"));
+
+			_N_docenti++;
+		}
+
+		// per differenziare gli id inevitabilemte ripetuti tra docennti e studenti
+		// metto un "offset" a tutti gli id degli studenti, l'offset è l'id maggiore
+		// nella tabella docenti
+		temp = Main.baseDB.Query("SELECT MAX(ID) as max FROM docenti");
+		int max_doc_ID;
+		if (temp.next()) {
+			max_doc_ID = temp.getInt("max");
 		} else {
-			table = tables[priviledge];
+			max_doc_ID = 0;
 		}
-		Main.baseDB.Update("INSERT INTO " + table + " (username, password, hasLoggedOnce) VALUES ('"
-				+ _Username + "', '" + _User.password + "', 0);");
 
-		return _User;
+		// trovo gli studenti con l'username simile
+		temp = Main.baseDB.Query(
+				"SELECT `ID`, `username`, `id_classe` FROM `studenti` WHERE `username` LIKE '%" + _Username + "%';");
+
+		while (temp.next()) {
+			_N_studenti++;
+			System.out.printf("id = %d, nomeUtente = %s, classe = %s\n", (temp.getInt("ID") + max_doc_ID),
+					temp.getString("username"), temp.getString("id_classe"));
+
+		}
+
+		System.out.printf("%d utenti trovati con '%s' presente nel nome. ", (_N_docenti + _N_studenti), _Username);
+		System.out.print("Quale vuoi cancellare? (Digita l'id)\n-->");
+		int inputID = Main.in.nextInt();
+		Main.in.nextLine();
+
+		return inputID;
 
 	}
 
@@ -216,32 +213,102 @@ public class Utente {
 	 * che contengono quel nome, e richiede l'id di chi deve essere cancellato
 	 * 
 	 */
-	public static void deleteUser() {
+	public static void rimuoviUtente() {
 
-		System.out.print("Inserisci l'username dell'utente che vuoi cancellare\n--> ");
-		String inputUsername = Main.in.nextLine();
+		try {
 
-		for (int i = 0; i < tables.length; i++) {
+			// trovo l'utente richiesto
+			int U_ID = trovaUtente("Inserisci l'username dell'utente che vuoi cancellare\n--> ");
 
-			ResultSet res = Main.baseDB.Query("SELECT `ID`, `username` FROM `" + tables[i]
-					+ "` WHERE `username` LIKE '%" + inputUsername + "%';");
-			try {
-				int count = 0;
-				while (res.next()) {
-					System.out.println("id = " + res.getInt("ID") + ", nomeUtente = " + res.getString("username")
-							+ ", classe = " + res.getString("sezione") + "^" + res.getInt("classe"));
-					count++;
+			// TODO: ottimizzare, rimuovere la necessità di ricalcolare il massimo dell'id
+			// docente
+			ResultSet temp = Main.baseDB.Query("SELECT MAX(ID) as max FROM docenti");
+			int max_doc_ID;
+			if (temp.next()) {
+				max_doc_ID = temp.getInt("max");
+			} else {
+				max_doc_ID = 0;
+			}
+
+			// determino in base all'id selezionato quale id effettivo e quale tabella usare
+			String tabella = "docenti";
+			if (U_ID > max_doc_ID) {
+				tabella = "studenti";
+				U_ID -= max_doc_ID;
+			}
+
+			// cancello utente
+			Main.baseDB.Query("DELETE FROM `" + tabella + "` WHERE `ID`=" + U_ID + "");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	/**
+	 * Modifica un utente
+	 * 
+	 */
+	public static void modificaUtente() {
+
+		try {
+
+			// trovo l'utente richiesto
+			int U_ID = trovaUtente("Inserisci l'username dell'utente che vuoi modificare\n--> ");
+
+			// TODO: ottimizzare, rimuovere la necessità di ricalcolare il massimo dell'id
+			// docente
+			ResultSet temp = Main.baseDB.Query("SELECT MAX(ID) as max FROM docenti");
+			int max_doc_ID;
+			if (temp.next()) {
+				max_doc_ID = temp.getInt("max");
+			} else {
+				max_doc_ID = 0;
+			}
+
+			// determino in base all'id selezionato quale id effettivo e quale tabella usare
+			int tabella = 1;
+			if (U_ID > max_doc_ID) {
+				tabella = 0;
+				U_ID -= max_doc_ID;
+			}
+
+			// modifico l'utente (username, passwd, hasLoggedOnce, id_classe) modificabili
+
+			temp = Main.baseDB.Query("SELECT * FROM `" + tabelle[tabella] + "` WHERE `ID`=" + U_ID + ";");
+			temp.next();
+			String U_name = temp.getString("username");
+
+			String campo;
+			String valore;
+			boolean condition = true;
+			while (condition) {
+				System.out.printf("Seleziona un campo che vuoi modificare di %s :", U_name);
+				for(int i = 0; i < campi[tabella].length; i++) {
+					System.out.printf("%s ", campi[tabella][i]);
 				}
 
-				System.out.println(count + " utenti trovati con '" + inputUsername + "' presente nel nome.");
-				System.out.print("Quale vuoi cancellare? (Digita l'id)\n-->");
-				int inputID = Main.in.nextInt();
+				System.out.print("(inserisci esci per uscire) \n--> ");
+				campo = Main.in.nextLine();
 
-				Main.baseDB.Update("DELETE FROM `" + tables[i] + "` WHERE `ID`=" + inputID + ";");
+				
+				for(int i = 0; i < campi[tabella].length; i++) {
 
-			} catch (SQLException e) {
-				e.printStackTrace();
+					if (campi[tabella][i].equals(campo)) {
+						System.out.print("Inserisci il nuovo valore\n--> ");
+						valore = Main.in.nextLine();
+						Main.baseDB.Update("UPDATE `" + tabelle[tabella] + "` SET `" + campi[tabella][i] + "`='" + valore + "' WHERE `ID`=" + U_ID + ";");
+					} else if (campo.equals("esci")) {
+						condition = false;
+						break;
+					} else {
+						System.out.print("campo non riconosciuto");
+					}
+				}
 			}
+
+		} catch (SQLException e) {
 
 		}
 

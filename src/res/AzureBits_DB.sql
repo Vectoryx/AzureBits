@@ -34,7 +34,7 @@ CREATE TABLE docenti_classi (
 CREATE TABLE risposte(
 	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	testo VARCHAR(20),
-	correzzione VARCHAR(10),
+	correzione VARCHAR(10),
 	img_url VARCHAR(50)
 );
 
@@ -77,9 +77,9 @@ CREATE TABLE test_argomenti(
 	FOREIGN KEY (id_test) REFERENCES test (ID)
 );
 
-CREATE TABLE esegue(
-	id_domande INT,
+CREATE TABLE studenti_test(
+	id_studente INT,
 	id_test INT,
-	FOREIGN KEY (id_domande) REFERENCES domande (ID),
+	FOREIGN KEY (id_studente) REFERENCES studenti (ID),
 	FOREIGN KEY (id_test) REFERENCES test (ID)
 );
