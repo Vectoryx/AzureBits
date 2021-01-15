@@ -1,3 +1,27 @@
 Questa è lo schema del database che in que3sto momento è in utilizzo.
 
-Studente = **ID**, username, password, hasLoggedOnce, id_classe
+---
+
+Studenti = **ID**, username, password, hasLoggedOnce, id_classe
+
+Docenti = **ID**, username, password, hasLoggedOnce, admin
+
+Classi = **id_classe**, indirizzo, anno_scolastico
+
+Docenti_classi = *id_classe*, *id_docente*
+
+Risposte = **ID**, testo, correzione, img_url
+
+Domande = **ID**, *id_argomento*, testo, img_url, materia, punteggio, tipo
+
+Argomenti = **ID**, titolo
+
+Test = **ID**, titolo, tempo, voto_massimo, attivo, penalità
+
+Test_Domande = *id_domande*, *id_test*
+
+Test_Argomenti = *id_argomenti*, *id_test*
+
+Esegue = *id_domande*, *id_test*
+
+---
