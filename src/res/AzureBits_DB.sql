@@ -34,7 +34,7 @@ CREATE TABLE docenti_classi (
 CREATE TABLE risposte(
 	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	testo VARCHAR(20),
-	correzzione VARCHAR(10),
+	correzione VARCHAR(10),
 	img_url VARCHAR(50)
 );
 
