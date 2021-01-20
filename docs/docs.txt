@@ -77,3 +77,10 @@ La **Classe Test** viene descritta da:
 **Progressione della difficoltà delle domande**(Indica se la difficoltà delle domande sarà: Lineare quindi costante e sempre in salita / Inversa, quindi dalla più difficile alla più semplice / Random, cioè casuale)
 
 ---
+
+Abbiamo poi la classe main che serve a contenere e ad avviare il programma in se. All'interno di questo c'è il login e, se eseguito con successo il login, il programma differente per ogni utente di livello differente.
+
+Nel main abbiamo diversi metodi che servono agli utenti per eseguire azioni specifiche. Però abbiamo anche parti del codice cui servono per far andare avanti il programma come il login.
+
+
+
