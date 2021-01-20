@@ -86,4 +86,8 @@ Al suo interno sono presenti diversi metodi che si possono utilizzare. I metodi 
 
 * Login, il metodo che viene utilizzato per identificare l'utente che entra all'interno del programma.
 * Parse, il metodo che viene utilizzato per analizzare gli input e suddividerli in comandi da parte dell'utente.
-*
+* Execute, il metodo che viene utilizzato per eseguire, con specifiche routine, i comandi presi in input.
+
+---
+
+Classe:
