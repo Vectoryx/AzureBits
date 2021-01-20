@@ -1,3 +1,5 @@
+---
+
 La Classe Utente è una classe generale che viene descritta da diversi attributi.
 
 Classe Utente:
@@ -90,4 +92,19 @@ Al suo interno sono presenti diversi metodi che si possono utilizzare. I metodi 
 
 ---
 
-Classe:
+Classe: Utente
+
+La classe Utente serve a gestire gli utenti all'interno del database. Contiene utili metodi che servono per la gestione delle password e degli utenti.
+
+I metodi che sono al suo interno sono i seguenti:
+
+* getPrompt, il metodo che viene utilizzato per ricevere il prompt corretto per l'utente.
+* genPassword, il metodo che viene utilizzato per generare password di 8 caratteri con 3 numeri e 5 lettere. Viene utilizzata come password provvisoria prima che gli utenti ne      creino una propria.
+* validaPassword, il metodo che viene utilizzato per verificare che la password data che l'utente ha inserito sia corretta e che contenga simboli, maiuscole e minuscole.
+* cambiaPassword, il metodo che viene utilizzato quando l'utente entra per la prima volta con le credenziali ricevute dall'Admin. Questo fa cambiare agli utenti la password in una password personale.
+* aggiungiUtente, il metodo che viene utilizzato quando si vuole aggiungere un nuovo utente. Solo l'admin è capace di utilizzare questo metodo.
+* trovaUtente, il metodo che viene utilizzato quandi si vuole trovare un utente specifico all'interno del database utilizzando l'username. Questo metodo viene utilizzato come attrezzo per i metodi di modifica e cancellazione di un'utente.
+* rimuoviUtente, il metodo che viene utilizzato quando si vuole rimuovere un utente dal database. Solo l'admin è capace di utilizzare questo metodo.
+* modificaUtente, il metodo che viene utilizzato quando si vuole modificare un utente nel database. Solo l'admin è capace di utilizzare questo metodo.
+
+---
