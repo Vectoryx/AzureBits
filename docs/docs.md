@@ -1,22 +1,4 @@
----
-
-La Classe Utente è una classe generale che viene descritta da diversi attributi.
-
-Classe Utente:
-
-User name (L'userName viene descritto da un unico valore Nome.Cognome)
-
-Privilegio  (Questo descrive il potere che ha l'Utente. Ci sono tre livelli: Admin, Professore, Studente)
-
-Classe (Questo è l'anno in cui si trovano gli utenti. Esso è un numero)
-
-Sezione (Questa è la sezione in cui gli utenti si trovano. Essa è una lettera)
-
-Password (Questa è la password che serve agli utenti per accedere ai loro rispettivi account)
-
----
-
-Prossimamente potete vedere che cosa possono fare i diversi privilegi
+I diversi privilegi
 
 L' Admin può
 
