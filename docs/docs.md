@@ -82,7 +82,8 @@ Classe: Main
 
 La classe Main serve a contenere e ad avviare il programma in se. Si interfaccia con l'utente e processa i comandi dati dallo stesso.
 
+Al suo interno sono presenti diversi metodi che si possono utilizzare. I metodi sono i seguenti:
 
-
-All'interno del main, come scritto precedentemente, c'è il Login. Il Login serve al programma per identificare la persona che lo ha avviato ed inoltre serve per inserire la password dello specifico utente all'interno del database.
-
+* Login, il metodo che viene utilizzato per identificare l'utente che entra all'interno del programma.
+* Parse, il metodo che viene utilizzato per analizzare gli input e suddividerli in comandi da parte dell'utente.
+*
