@@ -21,7 +21,7 @@ consultare i risultati
 -class Domanda-
 Questito della domanda
 [] risposte possibili a scelta multipla (1 o più)
-Immagine inerente alla domanda ???????
+Immagine inerente alla domanda 
 punteggio (1/2/3 punti)
 difficolta (facile/media/difficile/molto *)
 materia  -|
@@ -78,8 +78,7 @@ Tutti gli utenti devono essere registrati ed accedono alla piattaforma mediante 
 Che cos'è una domanda?
 - nella forma più semplice si tratta di un quesito accompagnato da alcune possibili risposte.
 Possono esserci numerose varianti (non tutte da implementare subito, ma il progetto deve essere facilmente estensibile):
-	domanda a risposta multipla con 1 sola risposta corretta
-	domanda a risposta multipla con più risposte corrette
+	domanda a risposta multipla con n risposte corretta
 	domanda vero/falso
 	domande a completamento*
 * queste ultime prevedono un quesito con zone "bianche" da riempire con parole e/o frasi fornite. Si può distinguere tra il caso in cui tutte le opzioni trovano posto nel quesito e il caso in cui alcune di queste sono semplici distrattori.

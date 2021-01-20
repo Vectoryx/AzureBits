@@ -13,8 +13,8 @@ public class Utente {
 
 	private static final char prompt[] = { '@', '>', '#' }; // il grado di privilegio è anche riflettuto dal prompt
 	private static final String tabelle[] = { "studenti", "docenti" };
-	private static final String campi[][] = {{"username", "password", "hasLoggedOnce", "id_classe"}, 
-											{"username", "password", "hasLoggedOnce", "admin"}};
+	private static final String campi[][] = { { "username", "password", "hasLoggedOnce", "id_classe" },
+			{ "username", "password", "hasLoggedOnce", "admin" } };
 
 	private static Random randGen = new Random();
 
@@ -108,7 +108,7 @@ public class Utente {
 	 * 
 	 * @return l'utente appena creato
 	 */
-	public static void creaUtente() {
+	public static void aggiungiUtente() {
 
 		System.out.print("Inserisci l'username dell'utente che vuoi aggiugere\n--> ");
 		String _Username = Main.in.nextLine();
@@ -285,20 +285,20 @@ public class Utente {
 			boolean condition = true;
 			while (condition) {
 				System.out.printf("Seleziona un campo che vuoi modificare di %s :", U_name);
-				for(int i = 0; i < campi[tabella].length; i++) {
+				for (int i = 0; i < campi[tabella].length; i++) {
 					System.out.printf("%s ", campi[tabella][i]);
 				}
 
 				System.out.print("(inserisci esci per uscire) \n--> ");
 				campo = Main.in.nextLine();
 
-				
-				for(int i = 0; i < campi[tabella].length; i++) {
+				for (int i = 0; i < campi[tabella].length; i++) {
 
 					if (campi[tabella][i].equals(campo)) {
 						System.out.print("Inserisci il nuovo valore\n--> ");
 						valore = Main.in.nextLine();
-						Main.baseDB.Update("UPDATE `" + tabelle[tabella] + "` SET `" + campi[tabella][i] + "`='" + valore + "' WHERE `ID`=" + U_ID + ";");
+						Main.baseDB.Update("UPDATE `" + tabelle[tabella] + "` SET `" + campi[tabella][i] + "`='"
+								+ valore + "' WHERE `ID`=" + U_ID + ";");
 					} else if (campo.equals("esci")) {
 						condition = false;
 						break;

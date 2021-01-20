@@ -1,5 +1,5 @@
--- tebelle per gli utenti
-CREATE TABLE docenti(
+-- tebelle per gli utenti e classi
+CREATE TABLE docenti( 
 	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	username VARCHAR(50),
 	password VARCHAR(50),
@@ -31,27 +31,30 @@ CREATE TABLE docenti_classi (
 
 -- tabelle per la gestione dei test
 
-CREATE TABLE risposte(
-	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	testo VARCHAR(20),
-	correzione VARCHAR(10),
-	img_url VARCHAR(50)
+CREATE TABLE argomenti(
+	titolo VARCHAR(30) NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE domande(
 	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	testo VARCHAR(20),
+	testo VARCHAR(150),
 	img_url VARCHAR(50),
 	materia VARCHAR(15),
 	punteggio INT,
 	tipo INT,
-	id_argomento INT,
-	FOREIGN KEY (id_argomento) REFERENCES argomenti (ID)
+	creatore INT,
+	id_argomento VARCHAR(30),
+	FOREIGN KEY (creatore) REFERENCES docenti (ID),
+	FOREIGN KEY (id_argomento) REFERENCES argomenti (titolo)
 );
 
-CREATE TABLE argomenti(
+CREATE TABLE risposte(
 	ID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-	titolo VARCHAR(30)
+	testo VARCHAR(150),
+	correzione VARCHAR(10),
+	img_url VARCHAR(50),
+	id_domanda INT,
+	FOREIGN KEY (id_domanda) REFERENCES domande (ID)
 );
 
 CREATE TABLE test(
@@ -60,7 +63,9 @@ CREATE TABLE test(
 	tempo TIME,
 	voto_massimo INT,
 	attivo INT,
-	penalita INT
+	penalita INT,
+	creatore INT,
+	FOREIGN KEY (creatore) REFERENCES docenti (ID)
 );
 
 CREATE TABLE test_domande(
@@ -72,8 +77,8 @@ CREATE TABLE test_domande(
 
 CREATE TABLE test_argomenti(
 	id_test INT,
-	id_argomenti INT,
-	FOREIGN KEY (id_argomenti) REFERENCES argomenti (ID),
+	id_argomenti VARCHAR(30),
+	FOREIGN KEY (id_argomenti) REFERENCES argomenti (titolo),
 	FOREIGN KEY (id_test) REFERENCES test (ID)
 );
 
