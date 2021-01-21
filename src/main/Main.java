@@ -3,13 +3,12 @@ package main;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.Arrays;
 
 public class Main {
 
-	static Scanner in = new Scanner(System.in, "UTF-8"); // questo scanner viene utilizzato in tutti il programma perchè
-															// se chiudo un'altro scanner in un'altra classe questo da
-															// problemi
+	// questo scanner viene utilizzato in tutti il programma perchè se chiudo
+	// un'altro scanner in un'altra classe questo da problemi
+	static Scanner in = new Scanner(System.in, "UTF-8");
 	static DBOperations baseDB = new DBOperations();
 
 	// TODO: input(char type) funzione di input che automaticamente controlla la
@@ -22,40 +21,27 @@ public class Main {
 	static int U_ID = 0;
 
 	static Comando comandi[] = { // lista dei comandi possibili
-			// new Comando("aggiungiutente", 2, "Aggiunge un utente al database"), // Done:
-			// new Comando("rimuoviutente", 2, "Rimuove un utente dal database"), // Done:
-			// new Comando("modificautente", 2, "Modifica alcuni paramentri di un utente"),
-			// //
-			// new Comando("aggiungiclasse", 2, "aggiungi una classe di studenti"), // Done:
-			// new Comando("rimuoviclasse", 2, "Cancella una classe di studenti (non
-			// cancella gli studenti)"), // Done:
-			// new Comando("modificaclasse", 2, "Aggiunge o rimuove specifici studenti da
-			// una classe"), //
-			// new Comando("aggiungitest", 1, "aggiungi un test in base alle domande ed ai
-			// parametri selezionati"), //
-			// new Comando("rimuovitest", 1, "Elimina nella sua interezza un test"), //
-			// new Comando("modificatest", 1, "Aggiunge o rimuova alcune domande dal test"),
-			// //
-			new Comando("aggiungidomanda", 1, "aggiungi una domanda con delle risposte"), //
-			// new Comando("rimuovidomanda", 1, "Elimina una domanda dal database"), //
-			// new Comando("modificadomanda", 1, "Modifica una domanda nel database"), //
-			// new Comando("lista", 1, "Mostra la lista di tutti gli utenti nel database"),
-			// // Done:
-			new Comando("listadomande", 1, "Mostra la lista di tutte le domande con relative risposte"), // Done:
-			// new Comando("iniziatest", 0, "Inizia un test dato e permettendo di riposndere
-			// a tutte le domande"), //
-			// new Comando("valutatest", 0, "Valuta il test appena fatto"), //
+			new Comando("aggiungi utente", 2, "Aggiunge un utente al database"), // Done:
+			new Comando("rimuovi utente", 2, "Rimuove un utente dal database"), // Done:
+			new Comando("modifica utente", 2, "Modifica alcuni paramentri di un utente"), //
+			new Comando("aggiungi classe", 2, "aggiungi una classe di studenti"), // Done:
+			new Comando("rimuovi classe", 2, "Cancella una classe di studenti (non cancella gli studenti)"), // Done:
+			new Comando("modifica classe", 2, "Aggiunge o rimuove specifici studenti da una classe"), //
+			new Comando("aggiungi test", 1, "aggiungi un test in base alle domande ed ai parametri selezionati"), //
+			new Comando("rimuovi test", 1, "Elimina nella sua interezza un test"), //
+			new Comando("modifica test", 1, "Aggiunge o rimuova alcune domande dal test"), //
+			new Comando("aggiungi domanda", 1, "aggiungi una domanda con delle risposte"), //
+			new Comando("rimuovi domanda", 1, "Elimina una domanda dal database"), //
+			new Comando("modifica domanda", 1, "Modifica una domanda nel database"), //
+			new Comando("lista utenti", 1, "Mostra la lista di tutti gli utenti nel database"), // Done:
+			new Comando("lista domande", 1, "Mostra la lista di tutte le domande con relative risposte"), // Done:
+			new Comando("inizia test", 0, "Inizia un test dato e permettendo di riposndere a tutte le domande"), //
+			new Comando("valuta test", 0, "Valuta il test appena fatto"), //
 			new Comando("esci", 0, "Esci dal programma"), // Done:
-			new Comando("?", 0, "Mostra lista dei comandi"), // Done:
 			new Comando("aiuto", 0, "Mostra descrizione dei comandi") }; // Done:
 
 	public static void main(String[] args) {
-		/*
-		 * for (int i = 57; i < 143; i++) {
-		 * baseDB.Update("UPDATE `docenti` SET `password`='" + Utente.genPassword()
-		 * +"' WHERE `ID`=" + i + ";"); }
-		 */
-
+		
 		// numero di tentavi che l'utente dispone, se li esaurisce il programma si
 		// chiude
 		int tentativiLogin = 4;
@@ -85,16 +71,18 @@ public class Main {
 		System.out.println();
 
 		// permetto all'utente di gestire i comandi in base al privilegio
-		String input;
+		int input;
 		Comando command;
 
 		while (true) {
+			menu();
 			System.out.print(U_Name + Utente.getPrompt(U_Privilegio) + " "); // aspetta l'input
-			input = in.nextLine();
+			input = in.nextInt();
+			in.nextLine();
 
-			command = parse(input); // analizza input
+			command = comandi[--input];
 
-			execute(command); // execute command
+			execute(command); // esegui comando
 		}
 
 	}
@@ -107,11 +95,11 @@ public class Main {
 	 */
 	public static boolean login() {
 		System.out.print("Inserisci il tuo username e la password (admin, Admin)\n--> ");
-		String userNameInput = "admin"; // in.nextLine();
+		String userNameInput = "admin";//in.nextLine();
 		System.out.print("--> ");
-		String userPasswdInput = "Admin"; // in.nextLine();
+		String userPasswdInput = "Admin"; //in.nextLine();
 
-		// dato che uso due tabelle per tipo gli utenti devo controllarle entrambe per
+		// dato che uso due tabelle per tipo di utenti devo controllarle entrambe per
 		// eseguire il login
 		String tables[] = { "studenti", "docenti" };
 
@@ -164,44 +152,14 @@ public class Main {
 		return false;
 	}
 
-	/**
-	 * Data una stringa restituisce il comando corretto e relativi argomenti,
-	 * controlla eventualmente se l'utente ha i privilegi necessari per il comando
-	 * 
-	 * @param userInput
-	 * @return
-	 */
-	public static Comando parse(String userInput) {
-
-		String[] arguments = userInput.split(" ");
-
-		Comando current = new Comando("None", 3, "None");
-
-		// trovo un comando simile all'input
+	public static void menu() {
+		System.out.println("Scegli un' opzione");
 		for (int i = 0; i < comandi.length; i++) {
-			if (comandi[i].getNome().contains(arguments[0].toLowerCase())) {
-				current = comandi[i];
-				break;
-			}
+			System.out.println(i + 1 +") " + comandi[i].getNome());
 		}
-
-		// tronco l'array omettendo il primo valore
-		if (arguments.length > 1) {
-			current.setArguments(Arrays.copyOfRange(arguments, 1, arguments.length));
-		}
-
-		// caso se non trovo nessun comando simile o se il privilegio è insuffiente
-		if (current.getNome().equals("None")) {
-			System.out.println(userInput + " non riconosciuto, per una lista di comandi digita ? o aiuto");
-			return current;
-		} else if (current.getPrivilegio() > U_Privilegio) {
-			System.out.println("Non hai il permesso di eseguire " + userInput);
-			return new Comando("None", 3, "None");
-		} else {
-			return current;
-		}
-
+		System.out.println();
 	}
+
 
 	/**
 	 * Esegue, con routine specifiche, il comando preso in input
@@ -209,6 +167,8 @@ public class Main {
 	 * @param command
 	 */
 	public static void execute(Comando command) {
+
+		System.out.println();
 
 		String[] arguments = command.getNome().split(" ");
 
@@ -247,6 +207,8 @@ public class Main {
 			/*-----------------------------------------------------------------------------------------------------------------------*/
 			case "lista":
 
+				// uso questo array sia per le tabelle degli utenti sia per stampare in output i
+				// nomi
 				String tables[] = { "student", "docent" };
 
 				try {
@@ -310,17 +272,10 @@ public class Main {
 
 			/*-----------------------------------------------------------------------------------------------------------------------*/
 			case "aiuto":
-				Comando obj = parse(arguments[1]);
-				System.out.print(obj.getDescrizione());
-				break;
-
-			/*-----------------------------------------------------------------------------------------------------------------------*/
-			case "?":
-				System.out.println("Lista comandi consentiti:");
-
-				for (int i = 0; i < comandi.length; i++) {
-					System.out.println(comandi[i].getNome());
-				}
+				menu();
+				int index = in.nextInt();
+				Comando c = comandi[--index];
+				System.out.print(c.getDescrizione());
 				break;
 
 			/*-----------------------------------------------------------------------------------------------------------------------*/
@@ -328,6 +283,7 @@ public class Main {
 				break;
 		}
 
+		System.out.println();
 	}
 
 	public static String inputString() {

@@ -88,3 +88,6 @@ CREATE TABLE studenti_test(
 	FOREIGN KEY (id_studente) REFERENCES studenti (ID),
 	FOREIGN KEY (id_test) REFERENCES test (ID)
 );
+
+CREATE DATABASE AzureBits
+USE AzureBits

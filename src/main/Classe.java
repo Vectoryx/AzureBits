@@ -11,7 +11,7 @@ public class Classe {
 		System.out.print("Inserisci il numero e la sezione della classe che vuoi aggiungere \n--> ");
 		_classe_crea = Main.in.nextLine();
 
-		System.out.print("Inserisci l'indirzzo(informatica, grafica, ...) della classe che vuoi aggiungere \n--> ");
+		System.out.print("Inserisci l'indirizzo(informatica, grafica, ...) della classe che vuoi aggiungere \n--> ");
 		_indirizzo_crea = Main.in.nextLine();
 
 		// TODO: chiedere al profa cosa serve l'anno

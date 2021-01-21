@@ -18,7 +18,7 @@ class Domanda {
 			// acquisisco le variabili necessarie
 
 			// materia
-			System.out.print("Di che materia è questa domanda? \n--> ");
+			System.out.print("Di che materia e' questa domanda? \n--> ");
 			_materia = Main.in.nextLine();
 
 			System.out.println("Elenco degli argomenti presenti nel database, (vengono aggiunti automaticamente)");
