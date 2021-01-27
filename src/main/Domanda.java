@@ -37,8 +37,7 @@ class Domanda {
 
 			// punteggio
 			System.out.print("Quanti punti vale questa domanda? \n--> ");
-			_punteggio = Main.in.nextInt();
-			Main.in.nextLine(); // cancello il \n rimasco nello scanner
+			_punteggio = Main.inputInt();
 
 			// testo
 			System.out.print("Inserisci il testo della domanda \n--> ");
@@ -47,8 +46,7 @@ class Domanda {
 			// inserisco le domande
 
 			System.out.print("Quante risposte comprende questa domanda? \n--> ");
-			_n_domande = Main.in.nextInt();
-			Main.in.nextLine();
+			_n_domande = Main.inputInt();
 
 			// inserisco la domanda nel DB
 			Main.baseDB.Update("INSERT INTO `domande` (testo, materia, punteggio, tipo, creatore, id_argomento) VALUES ('"

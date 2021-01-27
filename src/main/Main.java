@@ -11,9 +11,6 @@ public class Main {
 	static Scanner in = new Scanner(System.in, "UTF-8");
 	static DBOperations baseDB = new DBOperations();
 
-	// TODO: input(char type) funzione di input che automaticamente controlla la
-	// correttezza dell tipo di dato
-
 	// dati dell'utente corrente, utili anche per altre classi
 	static int U_Privilegio = 0;
 	static String U_Name = "";
@@ -41,10 +38,10 @@ public class Main {
 			new Comando("aiuto", 0, "Mostra descrizione dei comandi") }; // Done:
 
 	public static void main(String[] args) {
-		
+
 		// numero di tentavi che l'utente dispone, se li esaurisce il programma si
 		// chiude
-		int tentativiLogin = 4;
+		int tentativiLogin = 5;
 
 		while (true) {
 
@@ -75,10 +72,18 @@ public class Main {
 		Comando command;
 
 		while (true) {
-			menu();
-			System.out.print(U_Name + Utente.getPrompt(U_Privilegio) + " "); // aspetta l'input
-			input = in.nextInt();
-			in.nextLine();
+			while (true) {
+				menu();
+				// riceve l'input dell'utente
+				System.out.print(U_Name + Utente.getPrompt(U_Privilegio) + " ");
+				input = inputInt();
+				if (input > 0 && input < comandi.length) {
+					break;
+				} else {
+					System.out.println("Numero comando non consentito\n");
+					in.nextLine();
+				}
+			}
 
 			command = comandi[--input];
 
@@ -95,9 +100,9 @@ public class Main {
 	 */
 	public static boolean login() {
 		System.out.print("Inserisci il tuo username e la password (admin, Admin)\n--> ");
-		String userNameInput = "admin";//in.nextLine();
+		String userNameInput = "admin";// in.nextLine();
 		System.out.print("--> ");
-		String userPasswdInput = "Admin"; //in.nextLine();
+		String userPasswdInput = "Admin"; // in.nextLine();
 
 		// dato che uso due tabelle per tipo di utenti devo controllarle entrambe per
 		// eseguire il login
@@ -155,11 +160,10 @@ public class Main {
 	public static void menu() {
 		System.out.println("Scegli un' opzione");
 		for (int i = 0; i < comandi.length; i++) {
-			System.out.println(i + 1 +") " + comandi[i].getNome());
+			System.out.println(i + 1 + ") " + comandi[i].getNome());
 		}
 		System.out.println();
 	}
-
 
 	/**
 	 * Esegue, con routine specifiche, il comando preso in input
@@ -273,7 +277,8 @@ public class Main {
 			/*-----------------------------------------------------------------------------------------------------------------------*/
 			case "aiuto":
 				menu();
-				int index = in.nextInt();
+				System.out.print("Di comando vuoii informazioni? \n-->");
+				int index = inputInt();
 				Comando c = comandi[--index];
 				System.out.print(c.getDescrizione());
 				break;
@@ -286,12 +291,29 @@ public class Main {
 		System.out.println();
 	}
 
-	public static String inputString() {
-		return "";
-	}
-
+	/**
+	 * Richiede in input un numero intero e controlla che sia effettivamente un
+	 * numero
+	 * 
+	 * @return res, il numero ottenuto in input
+	 */
 	public static int inputInt() {
-		return 0;
+		// input di base
+		String input;
+		int res;
+
+		while (true) {
+			input = in.nextLine();
+			try {
+				res = Integer.parseInt(input);
+				break;
+			} catch (NumberFormatException e) {
+				System.out.print("Devi inserire un numero!\n--> ");
+			}
+		}
+
+		return res;
+
 	}
 
 }

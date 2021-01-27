@@ -201,8 +201,7 @@ public class Utente {
 
 		System.out.printf("%d utenti trovati con '%s' presente nel nome. ", (_N_docenti + _N_studenti), _Username);
 		System.out.print("Quale vuoi cancellare? (Digita l'id)\n-->");
-		int inputID = Main.in.nextInt();
-		Main.in.nextLine();
+		int inputID = Main.inputInt();
 
 		return inputID;
 

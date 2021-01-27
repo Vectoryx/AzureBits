@@ -12,7 +12,7 @@ public class Comando {
 		this.privilegio = priv;
 		this.descrizione = desc;
 	}
-	
+
 	public Comando(String nom, int priv, String desc, String[] args) {
 		this.nome = nom;
 		this.privilegio = priv;
@@ -23,11 +23,11 @@ public class Comando {
 	String getNome() {
 		return this.nome;
 	}
-	
+
 	int getPrivilegio() {
 		return this.privilegio;
 	}
-	
+
 	String getDescrizione() {
 		return this.descrizione;
 	}
